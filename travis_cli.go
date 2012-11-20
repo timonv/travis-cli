@@ -44,9 +44,7 @@ func main() {
     } else {
       fmt.Println("Could not get build status")
     }
-
   }
-
 }
 
 func handleError(err error) {
@@ -54,12 +52,3 @@ func handleError(err error) {
     fmt.Println(err)
   }
 }
-
-
-
-
-
-
-
-
-
