@@ -3,6 +3,7 @@ package main
 import (
   "fmt"
   "flag"
+  /*"errors"*/
 
   "./adapter"
   "./git_helper"
@@ -37,10 +38,11 @@ func main() {
     adapter := adapter.NewAdapter(*owner,*repo)
     builds := adapter.GetBuilds()
     if len(builds) > 0 {
-      build := builds[0]
+      build,_ := getCorrectBuild(builds)
       fmt.Println("Result ", build.HumanResult())
       fmt.Println("Branch ", build.Branch)
       fmt.Println("Commit ", build.HumanCommit())
+      fmt.Println("Finished at ", build.Finished_at)
     } else {
       fmt.Println("Could not get build status")
     }
@@ -51,4 +53,16 @@ func handleError(err error) {
   if err != nil {
     fmt.Println(err)
   }
+}
+
+func getCorrectBuild(builds []adapter.Build) (adapter.Build, error) {
+  var correct adapter.Build
+  var err error
+  for _, build := range builds {
+    if build.Finished_at != "" {
+      correct = build
+    }
+  }
+
+  return correct, err
 }

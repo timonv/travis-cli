@@ -17,12 +17,13 @@ SAMPLE
 }
 */
 type Build struct {
-  Branch,Commit,Messages string
+  Branch,Commit,Messages,Finished_at string
   Repository_id,Result float64
 }
 
 func (b Build) HumanResult() string {
   var status string
+  fmt.Println(b)
 
   if b.Result == float64(0) {
     status = "Passed"
