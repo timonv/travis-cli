@@ -5,6 +5,7 @@ import (
   "flag"
 
   "./adapter"
+  "./git_helper"
 
   /*"io"*/
   /*"strings"*/
@@ -14,25 +15,43 @@ import (
 
 
 func main() {
-  owner := flag.String("owner","owner", "owner of the repository")
-  repo := flag.String("repo","repository",  "name of the repository")
+  owner := flag.String("owner","", "owner of the repository")
+  repo := flag.String("repo","",  "name of the repository")
+  branch := flag.String("branch","",  "name of the branch")
   flag.Parse()
 
-  fmt.Println("Getting status for: ", *owner, "/", *repo)
+  if *owner == "" || *repo == "" {
+    repository := git_helper.GetRepo()
+    *owner = repository.Owner
+    *repo = repository.Name
+  }
 
-  adapter := adapter.NewAdapter(*owner,*repo)
-  builds := adapter.GetBuilds()
-  build := builds[0]
+  if *branch == "" {
+    *branch, _ = git_helper.CurrentBranch()
+  }
 
-  fmt.Println("Result ", build.HumanResult())
-  fmt.Println("Branch ", build.Branch)
-  fmt.Println("Commit ", build.HumanCommit())
+  if *owner != "" || *repo != "" {
+    fmt.Println("Getting status for: ", *owner, "/", *repo)
+    fmt.Println("On branch: ", *branch)
+
+    adapter := adapter.NewAdapter(*owner,*repo)
+    builds := adapter.GetBuilds()
+    if len(builds) > 0 {
+      build := builds[0]
+      fmt.Println("Result ", build.HumanResult())
+      fmt.Println("Branch ", build.Branch)
+      fmt.Println("Commit ", build.HumanCommit())
+    } else {
+      fmt.Println("Could not get build status")
+    }
+
+  }
 
 }
 
 func handleError(err error) {
   if err != nil {
-    fmt.Println("ERROR")
+    fmt.Println(err)
   }
 }
 
