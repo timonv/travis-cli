@@ -24,7 +24,7 @@ type Build struct {
 func (b Build) HumanResult() string {
   var status string
 
-  if b.Result == 0 {
+  if b.Result == float64(0) {
     status = "Passed"
   } else {
     status = "Failed"
