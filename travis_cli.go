@@ -5,8 +5,8 @@ import (
   "flag"
   /*"errors"*/
 
-  "./adapter"
-  "./git_helper"
+  "github.com/timonv/travis-cli/adapter"
+  "github.com/timonv/travis-cli/git_helper"
 
   /*"io"*/
   /*"strings"*/

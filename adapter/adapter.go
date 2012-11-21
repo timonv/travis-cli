@@ -23,7 +23,6 @@ type Build struct {
 
 func (b Build) HumanResult() string {
   var status string
-  fmt.Println(b)
 
   if b.Result == float64(0) {
     status = "Passed"
