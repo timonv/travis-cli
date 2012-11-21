@@ -1,8 +1,6 @@
 package git_helper
 
 import (
-  "fmt"
-  /*"strings"*/
   "os/exec"
   "regexp"
   "errors"
@@ -12,23 +10,12 @@ type GitRepo struct {
   Owner, Name string
 }
 
-func GetRepo() GitRepo {
-  repostrings, _ := cmdShowOrigin()
+func (gh *GitHelper) GetRepo() (GitRepo, error) {
+  repostrings, err := gh.cmdShowOrigin()
   owner,name, err := parseGitResponse(repostrings)
-  handle(err)
+  gr := GitRepo{Name: name, Owner: owner}
 
-  fmt.Println(owner,name)
-  repo := GitRepo{Owner: owner, Name: name}
-  return repo
-}
-
-func cmdShowOrigin() (string, error) {
-  cmd := exec.Command("git", "remote", "show", "origin")
-  out, err := cmd.Output()
-
-  handle(err)
-
-  return string(out), err
+  return gr, err
 }
 
 func parseGitResponse(repostrings string) (string, string, error) {
@@ -37,10 +24,8 @@ func parseGitResponse(repostrings string) (string, string, error) {
   var repo string
 
   urlRegexp, err := regexp.Compile(`https:\/\/github\.com\/(.+)\/(.+).git`)
-  handle(err)
 
   matches := urlRegexp.FindStringSubmatch(repostrings)
-  fmt.Println(matches)
   if len(matches) >= 3 {
     owner = matches[1]
     repo = matches[2]
@@ -50,3 +35,13 @@ func parseGitResponse(repostrings string) (string, string, error) {
 
   return owner, repo, err
 }
+
+func cmdShowOrigin() (string, error) {
+  cmd := exec.Command("git", "remote", "show", "origin")
+  out, err := cmd.Output()
+
+
+  return string(out), err
+}
+
+
