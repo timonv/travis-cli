@@ -3,14 +3,11 @@ package main
 import (
   "fmt"
   "flag"
-  /*"errors"*/
 
   "github.com/timonv/travis-cli/adapter"
-  "github.com/timonv/travis-cli/git_helper"
-
-  /*"io"*/
-  /*"strings"*/
-  /*"log"*/
+  gith "github.com/timonv/travis-cli/git_helper"
+  /*"./adapter"*/
+  /*gith "./git_helper"*/
 )
 
 
@@ -21,14 +18,17 @@ func main() {
   branch := flag.String("branch","",  "name of the branch")
   flag.Parse()
 
+  gh := gith.NewGitHelper()
+
   if *owner == "" || *repo == "" {
-    repository := git_helper.GetRepo()
+    repository, _ := gh.GetRepo()
     *owner = repository.Owner
     *repo = repository.Name
   }
 
   if *branch == "" {
-    *branch, _ = git_helper.CurrentBranch()
+    gbranch,_ := gh.CurrentBranch()
+    *branch = gbranch.Name
   }
 
   if *owner != "" || *repo != "" {
@@ -59,7 +59,7 @@ func getCorrectBuild(builds []adapter.Build) (adapter.Build, error) {
   var correct adapter.Build
   var err error
   for _, build := range builds {
-    if build.Finished_at != "" {
+    if build.Finished_at != ""  {
       correct = build
     }
   }
