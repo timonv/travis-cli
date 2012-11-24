@@ -10,12 +10,15 @@ type GitRepo struct {
   Owner, Name string
 }
 
-func (gh *GitHelper) GetRepo() (GitRepo, error) {
+func (gh *GitHelper) GetRepo() GitRepo {
+  // err is irrelevant. Parse git response will parse an empty string and throw back a fatal error.
   repostrings, err := gh.cmdShowOrigin()
-  owner,name, err := parseGitResponse(repostrings)
-  gr := GitRepo{Name: name, Owner: owner}
+  isLogged(err)
 
-  return gr, err
+  owner,name, err := parseGitResponse(repostrings)
+  isFatal(err)
+
+  return GitRepo{Name: name, Owner: owner}
 }
 
 func parseGitResponse(repostrings string) (string, string, error) {
@@ -23,7 +26,7 @@ func parseGitResponse(repostrings string) (string, string, error) {
   var owner string
   var repo string
 
-  urlRegexp, err := regexp.Compile(`https:\/\/github\.com\/(.+)\/(.+).git`)
+  urlRegexp := regexp.MustCompile(`https:\/\/github\.com\/(.+)\/(.+).git`)
 
   matches := urlRegexp.FindStringSubmatch(repostrings)
   if len(matches) >= 3 {

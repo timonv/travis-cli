@@ -11,11 +11,7 @@ func TestGitHelperBranch (t *testing.T) {
     return "* master", nil
   }
 
-  current, err := helper.CurrentBranch()
-  if err != nil {
-    fmt.Println(err)
-    t.Fail()
-  }
+  current := helper.CurrentBranch()
   if current.Name != "master" {
     fmt.Println("Branch mismatch ", string(current.Name))
     t.Fail()
@@ -28,11 +24,8 @@ func TestGitHelperRepo (t *testing.T) {
     return `https://github.com/timonv/travis-cli.git`, nil
   }
 
-  current, err := helper.GetRepo()
-  if err != nil {
-    fmt.Println(err)
-    t.Fail()
-  }
+  current := helper.GetRepo()
+
   if current.Name != "travis-cli" && current.Owner != "timonv" {
     fmt.Println("Branch mismatch ", current)
     t.Fail()

@@ -1,7 +1,6 @@
 package git_helper
 
 import (
-  /*"fmt"*/
   "os/exec"
   "strings"
   "errors"
@@ -11,15 +10,17 @@ type GitBranch struct {
   Name string
 }
 
-func (gh *GitHelper) CurrentBranch() (GitBranch, error) {
+func (gh *GitHelper) CurrentBranch() (GitBranch) {
   branch_name, err := gh.getCurrentBranch()
-  current_branch := GitBranch{Name: branch_name}
-  return current_branch, err
+  isFatal(err)
+  return GitBranch{Name: branch_name}
 }
 
 func (gh *GitHelper) getCurrentBranch() (string, error) {
   var current string
   raw_output, err := gh.cmdBranch()
+  isLogged(err)
+
   splitted := strings.Split(raw_output, "\n")
 
   for _, branch := range splitted {

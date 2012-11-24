@@ -4,10 +4,10 @@ import (
   "fmt"
   "flag"
 
-  "github.com/timonv/travis-cli/adapter"
-  gith "github.com/timonv/travis-cli/git_helper"
-  /*"./adapter"*/
-  /*gith "./git_helper"*/
+  /*"github.com/timonv/travis-cli/adapter"*/
+  /*gith "github.com/timonv/travis-cli/git_helper"*/
+  "./adapter"
+  gith "./git_helper"
 )
 
 
@@ -21,13 +21,13 @@ func main() {
   gh := gith.NewGitHelper()
 
   if *owner == "" || *repo == "" {
-    repository, _ := gh.GetRepo()
+    repository := gh.GetRepo()
     *owner = repository.Owner
     *repo = repository.Name
   }
 
   if *branch == "" {
-    gbranch,_ := gh.CurrentBranch()
+    gbranch := gh.CurrentBranch()
     *branch = gbranch.Name
   }
 
@@ -46,12 +46,6 @@ func main() {
     } else {
       fmt.Println("Could not get build status")
     }
-  }
-}
-
-func handleError(err error) {
-  if err != nil {
-    fmt.Println(err)
   }
 }
 
