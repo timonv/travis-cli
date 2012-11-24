@@ -3,14 +3,12 @@ package main
 import (
   "fmt"
   "flag"
-  /*"errors"*/
+  "log"
 
   "github.com/timonv/travis-cli/adapter"
-  "github.com/timonv/travis-cli/git_helper"
-
-  /*"io"*/
-  /*"strings"*/
-  /*"log"*/
+  gith "github.com/timonv/travis-cli/git_helper"
+  /*"./adapter"*/
+  /*gith "./git_helper"*/
 )
 
 
@@ -21,24 +19,22 @@ func main() {
   branch := flag.String("branch","",  "name of the branch")
   flag.Parse()
 
-  if *owner == "" || *repo == "" {
-    repository := git_helper.GetRepo()
-    *owner = repository.Owner
-    *repo = repository.Name
-  }
+  gh := gith.NewGitHelper()
 
-  if *branch == "" {
-    *branch, _ = git_helper.CurrentBranch()
-  }
+  r := fixOwnerRepo(*owner, *repo, gh)
+  b := fixBranch(*branch, gh)
 
-  if *owner != "" || *repo != "" {
-    fmt.Println("Getting status for: ", *owner, "/", *repo)
-    fmt.Println("On branch: ", *branch)
+  if r.Owner != "" || r.Name != "" {
+    fmt.Println("Getting status for: ", r.Owner, "/", r.Name)
+    fmt.Println("On branch: ", b.Name)
 
-    adapter := adapter.NewAdapter(*owner,*repo)
+    adapter := adapter.NewAdapter(r.Owner,r.Name)
     builds := adapter.GetBuilds()
     if len(builds) > 0 {
-      build,_ := getCorrectBuild(builds)
+      build := getCorrectBuild(builds, b.Name)
+      if build.Branch == "" {
+        log.Fatal("Could not get build")
+      }
       fmt.Println("Result ", build.HumanResult())
       fmt.Println("Branch ", build.Branch)
       fmt.Println("Commit ", build.HumanCommit())
@@ -49,20 +45,34 @@ func main() {
   }
 }
 
-func handleError(err error) {
-  if err != nil {
-    fmt.Println(err)
-  }
-}
-
-func getCorrectBuild(builds []adapter.Build) (adapter.Build, error) {
+func getCorrectBuild(builds []adapter.Build, branch string) adapter.Build {
   var correct adapter.Build
-  var err error
   for _, build := range builds {
-    if build.Finished_at != "" {
+    if build.Finished_at != "" && build.Branch == branch {
       correct = build
+      break
     }
   }
 
-  return correct, err
+  return correct
+}
+
+func fixOwnerRepo(o string, r string, gh gith.GitHelper) gith.GitRepo {
+  var repo gith.GitRepo
+  if o != "" && r != "" {
+    repo = gith.GitRepo{Owner: o, Name: r}
+  } else {
+    repo = gh.GetRepo()
+  }
+  return repo
+}
+
+func fixBranch(b string, gh gith.GitHelper) gith.GitBranch {
+  var branch gith.GitBranch
+  if b != "" {
+    branch =  gith.GitBranch{Name: b}
+  } else {
+    branch = gh.CurrentBranch()
+  }
+  return branch
 }
