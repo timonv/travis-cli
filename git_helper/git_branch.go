@@ -1,44 +1,32 @@
 package git_helper
 
 import (
-  "fmt"
   "os/exec"
   "strings"
   "errors"
 )
 
-func CurrentBranch() (string, error) {
-  raw_branches, err := cmdBranch()
-  current_branch, err := getCurrentBranch(raw_branches)
-  handle(err)
-  return current_branch, err
+type GitBranch struct {
+  Name string
 }
 
-func cmdBranch() (string, error) {
-  cmd := exec.Command("git", "branch")
-  out, err := cmd.Output()
-
-  handle(err)
-
-  return string(out), err
+func (gh *GitHelper) CurrentBranch() (GitBranch) {
+  branch_name, err := gh.getCurrentBranch()
+  isFatal(err)
+  return GitBranch{Name: branch_name}
 }
 
-func handle(e error) {
-  if e != nil {
-    fmt.Println(e)
-  }
-}
-
-func getCurrentBranch(b string) (string, error) {
-  var splitted []string
+func (gh *GitHelper) getCurrentBranch() (string, error) {
   var current string
-  var err error
+  raw_output, err := gh.cmdBranch()
+  isLogged(err)
 
-  splitted = strings.Split(b, "\n")
+  splitted := strings.Split(raw_output, "\n")
 
   for _, branch := range splitted {
     if string(branch) != "" && string(branch[0]) == "*" {
       current = branch[2:]
+      break
     }
   }
 
@@ -46,4 +34,10 @@ func getCurrentBranch(b string) (string, error) {
     err = errors.New("Can't find current branch")
   }
   return current, err
+}
+
+func cmdBranch() (string, error) {
+  cmd := exec.Command("git", "branch")
+  out, err := cmd.Output()
+  return string(out), err
 }
