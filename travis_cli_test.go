@@ -1,10 +1,10 @@
 package main
 
 import (
-  "fmt"
-  "testing"
+	"fmt"
+	"testing"
 )
 
 func TestTruth(t *testing.T) {
-  fmt.Println("Tests working!")
+	fmt.Println("Tests working!")
 }
