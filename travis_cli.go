@@ -2,8 +2,9 @@ package main
 
 import (
 	"flag"
-	"fmt"
+	/*"fmt"*/
 	"log"
+  "os"
 
   "travis_cli/adapter"
   gith "travis_cli/git_helper"
@@ -21,8 +22,8 @@ func main() {
 	b := fixBranch(*branch, gh)
 
 	if r.Owner != "" || r.Name != "" {
-		fmt.Println("Getting status for: ", r.Owner, "/", r.Name)
-		fmt.Println("On branch: ", b.Name)
+		/*fmt.Println("Getting status for: ", r.Owner, "/", r.Name)*/
+		/*fmt.Println("On branch: ", b.Name)*/
 
 		adapter := adapter.NewAdapter(r.Owner, r.Name)
 		builds := adapter.GetBuilds()
@@ -31,12 +32,9 @@ func main() {
 			if build.Branch == "" {
 				log.Fatal("Could not get build")
 			}
-			fmt.Println("Result ", build.HumanResult())
-			fmt.Println("Branch ", build.Branch)
-			fmt.Println("Commit ", build.HumanCommit())
-			fmt.Println("Finished at ", build.Finished_at)
+      printBuild(build)
 		} else {
-			fmt.Println("Could not get build status")
+			log.Fatal("Could not get build status")
 		}
 	}
 }
@@ -71,4 +69,26 @@ func fixBranch(b string, gh gith.GitHelper) gith.GitBranch {
 		branch = gh.CurrentBranch()
 	}
 	return branch
+}
+
+func printBuild(build adapter.Build) {
+  red :="\x1b[31m" 
+  green := "\x1b[32m" 
+  reset := "\x1b[0m"
+  result := build.HumanResult()
+  if result == "Passed" {
+    result = green + result + reset
+  } else {
+    result = red + result + reset
+  }
+  os.Stdout.Write([]byte(result))
+  os.Stdout.Write([]byte("\t"))
+  os.Stdout.Write([]byte(build.Branch))
+  os.Stdout.Write([]byte("\t"))
+  os.Stdout.Write([]byte(build.HumanCommit()))
+  os.Stdout.Write([]byte("\t"))
+  os.Stdout.Write([]byte(build.Finished_at))
+  os.Stdout.Write([]byte("\t"))
+  os.Stdout.Write([]byte(build.Finished_at))
+  os.Stdout.Write([]byte("\n"))
 }
