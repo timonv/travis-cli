@@ -27,8 +27,15 @@ func parseGitResponse(repostrings string) (string, string, error) {
 	var repo string
 
 	urlRegexp := regexp.MustCompile(`https:\/\/github\.com\/(.+)\/(.+).git`)
+  gitRegexp := regexp.MustCompile(`git@github\.com:(.+)\/(.+).git`)
 
 	matches := urlRegexp.FindStringSubmatch(repostrings)
+
+  // Fallback to Git regexp
+  if len(matches) < 3 {
+    matches = gitRegexp.FindStringSubmatch(repostrings)
+  }
+
 	if len(matches) >= 3 {
 		owner = matches[1]
 		repo = matches[2]
