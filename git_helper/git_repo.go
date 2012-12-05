@@ -47,7 +47,7 @@ func parseGitResponse(repostrings string) (string, string, error) {
 }
 
 func cmdShowOrigin() (string, error) {
-	cmd := exec.Command("git", "remote", "show", "origin")
+	cmd := exec.Command("git", "remote", "-v")
 	out, err := cmd.Output()
 
 	return string(out), err
