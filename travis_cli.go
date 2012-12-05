@@ -5,10 +5,8 @@ import (
 	"fmt"
 	"log"
 
-	"github.com/timonv/travis-cli/adapter"
-	gith "github.com/timonv/travis-cli/git_helper"
-	/*"./adapter"*/
-	/*gith "./git_helper"*/
+  "travis_cli/adapter"
+  gith "travis_cli/git_helper"
 )
 
 func main() {
