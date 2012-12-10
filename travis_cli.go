@@ -2,12 +2,11 @@ package main
 
 import (
 	"flag"
-	/*"fmt"*/
 	"log"
   "os"
 
-  "travis_cli/adapter"
-  gith "travis_cli/git_helper"
+  "github.com/timonv/travis-cli/adapter"
+  "github.com/timonv/travis-cli/git_helper"
 )
 
 func main() {
@@ -16,15 +15,12 @@ func main() {
 	branch := flag.String("branch", "", "name of the branch")
 	flag.Parse()
 
-	gh := gith.NewGitHelper()
+	gh := git_helper.NewGitHelper()
 
 	r := fixOwnerRepo(*owner, *repo, gh)
 	b := fixBranch(*branch, gh)
 
 	if r.Owner != "" || r.Name != "" {
-		/*fmt.Println("Getting status for: ", r.Owner, "/", r.Name)*/
-		/*fmt.Println("On branch: ", b.Name)*/
-
 		adapter := adapter.NewAdapter(r.Owner, r.Name)
 		builds := adapter.GetBuilds()
 		if len(builds) > 0 {
@@ -51,20 +47,20 @@ func getCorrectBuild(builds []adapter.Build, branch string) adapter.Build {
 	return correct
 }
 
-func fixOwnerRepo(o string, r string, gh gith.GitHelper) gith.GitRepo {
-	var repo gith.GitRepo
+func fixOwnerRepo(o string, r string, gh git_helper.GitHelper) git_helper.GitRepo {
+	var repo git_helper.GitRepo
 	if o != "" && r != "" {
-		repo = gith.GitRepo{Owner: o, Name: r}
+		repo = git_helper.GitRepo{Owner: o, Name: r}
 	} else {
 		repo = gh.GetRepo()
 	}
 	return repo
 }
 
-func fixBranch(b string, gh gith.GitHelper) gith.GitBranch {
-	var branch gith.GitBranch
+func fixBranch(b string, gh git_helper.GitHelper) git_helper.GitBranch {
+	var branch git_helper.GitBranch
 	if b != "" {
-		branch = gith.GitBranch{Name: b}
+		branch = git_helper.GitBranch{Name: b}
 	} else {
 		branch = gh.CurrentBranch()
 	}
