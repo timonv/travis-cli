@@ -3,16 +3,20 @@
 A platform independent Travis status fetcher. No more need to go to the
 web or mail to check your build status.
 
+There's a similar ruby gem with similar features. However, this is
+platform independent.
+
 ## Installing
 
-For now you'll have to clone the source, compile and put it in your
-path.
+For now you'll have to clone the source, compile and install using make.
 
 ```bash
-  $ git clone <this repo>
-  $ go build
-  $ export PATH=awesome:$PATH
+  $ git clone https://github.com/timonv/travis-cli.git 
+  $ make 
+  $ make install
 ```
+
+Or, if you'd prefer a soft link, you can use ```make install soft```.
 
 ## Usage
 
