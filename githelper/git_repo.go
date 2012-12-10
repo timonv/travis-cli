@@ -1,4 +1,4 @@
-package git_helper
+package githelper
 
 import (
 	"errors"

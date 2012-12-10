@@ -6,7 +6,7 @@ import (
   "os"
 
   "github.com/timonv/travis-cli/adapter"
-  "github.com/timonv/travis-cli/git_helper"
+  "github.com/timonv/travis-cli/githelper"
 )
 
 func main() {
@@ -15,7 +15,7 @@ func main() {
 	branch := flag.String("branch", "", "name of the branch")
 	flag.Parse()
 
-	gh := git_helper.NewGitHelper()
+	gh := githelper.NewGitHelper()
 
 	r := fixOwnerRepo(*owner, *repo, gh)
 	b := fixBranch(*branch, gh)
@@ -47,20 +47,20 @@ func getCorrectBuild(builds []adapter.Build, branch string) adapter.Build {
 	return correct
 }
 
-func fixOwnerRepo(o string, r string, gh git_helper.GitHelper) git_helper.GitRepo {
-	var repo git_helper.GitRepo
+func fixOwnerRepo(o string, r string, gh githelper.GitHelper) githelper.GitRepo {
+	var repo githelper.GitRepo
 	if o != "" && r != "" {
-		repo = git_helper.GitRepo{Owner: o, Name: r}
+		repo = githelper.GitRepo{Owner: o, Name: r}
 	} else {
 		repo = gh.GetRepo()
 	}
 	return repo
 }
 
-func fixBranch(b string, gh git_helper.GitHelper) git_helper.GitBranch {
-	var branch git_helper.GitBranch
+func fixBranch(b string, gh githelper.GitHelper) githelper.GitBranch {
+	var branch githelper.GitBranch
 	if b != "" {
-		branch = git_helper.GitBranch{Name: b}
+		branch = githelper.GitBranch{Name: b}
 	} else {
 		branch = gh.CurrentBranch()
 	}
