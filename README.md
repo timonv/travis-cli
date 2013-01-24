@@ -3,6 +3,8 @@
 A platform independent Travis status fetcher. No more need to go to the
 web or mail to check your build status.
 
+This hacky tool served as a tryout on golang. It might have issues, lack a decent installer or annoy you. I'm not maintaining this project actively.
+
 There's a similar ruby gem with similar features. However, this is
 platform independent.
 
@@ -15,8 +17,6 @@ For now you'll have to clone the source, compile and install using make.
   $ make 
   $ make install
 ```
-
-Or, if you'd prefer a soft link, you can use ```make install soft```.
 
 ## Usage
 
